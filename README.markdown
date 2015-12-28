@@ -5,8 +5,8 @@ This repository is basically a place for me to store the latest OpenResty + Ngin
 
 Contains:
 ---------
-* OpenResty 1.9.3.2
-* Nginx 1.9.3
+* OpenResty 1.9.7.1
+* Nginx 1.9.7
 * LuaJit
 
 Built-in modules:
@@ -15,7 +15,7 @@ Built-in modules:
 * Gzip static
 * Real IP
 * Secure Link
-* SPDY
+* HTTP2
 * SSL
 * Status
 
@@ -34,7 +34,7 @@ This is how you configure it:
     --with-http_ssl_module \
     --with-http_realip_module \
     --with-http_gzip_static_module \
-    --with-http_spdy_module \
+    --with-http_v2_module \
     --with-http_stub_status_module \
     --with-http_secure_link_module \
     --with-http_geoip_module \
@@ -48,7 +48,7 @@ This is how you configure it:
 Name
 ====
 
-ngx_openresty - Turning Nginx into a full-fledged Web App Server
+ngx_openresty - Turning Nginx into a Full-Fledged Scriptable Web Platform
 
 Table of Contents
 =================
@@ -96,6 +96,15 @@ make
 ```
 
 at the top of the bundle source tree.
+
+Please note that you may need to install some extra dependencies, like `perl`, `dos2unix` and
+the Perl CPAN mdoule `Markdown::Pod`. On Fedora 22, for example, installing the dependencies
+is as simple as running the following commands:
+
+```bash
+sudo dnf install perl dos2unix
+sudo cpan Markdown::Pod
+```
 
 [Back to TOC](#table-of-contents)
 
