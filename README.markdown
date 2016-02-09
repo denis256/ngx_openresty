@@ -5,7 +5,7 @@ This repository is basically a place for me to store the latest OpenResty + Ngin
 
 Contains:
 ---------
-* OpenResty 1.9.7.1
+* OpenResty 1.9.7.3
 * Nginx 1.9.7
 * LuaJit
 
@@ -23,7 +23,7 @@ Third party modules:
 --------------------
 * Upload Progress
 * Auth Digest
-* ngx_pagespeed 1.9.32.10
+* ngx_pagespeed 1.10.33.4
 * Upstream Fair Load Balancer
 * Mod Zip
 
@@ -40,7 +40,7 @@ This is how you configure it:
     --with-http_geoip_module \
     --add-module=packages/nginx-upload-progress-module-0.9.1 \
     --add-module=packages/nginx-http-auth-digest-master \
-    --add-module=packages/ngx_pagespeed-release-1.9.32.10 \
+    --add-module=packages/ngx_pagespeed-release-1.10.33.4-beta \
     --add-module=packages/nginx-upstream-fair-master \
     --add-module=packages/mod_zip-master \
     -j4
@@ -48,7 +48,7 @@ This is how you configure it:
 Name
 ====
 
-ngx_openresty - Turning Nginx into a Full-Fledged Scriptable Web Platform
+OpenResty - Turning Nginx into a Full-Fledged Scriptable Web Platform
 
 Table of Contents
 =================
@@ -64,7 +64,7 @@ Table of Contents
 Description
 ===========
 
-ngx_openresty is a full-fledged web application server by bundling the standard nginx core,
+OpenResty is a full-fledged web application server by bundling the standard nginx core,
 lots of 3rd-party nginx modules, as well as most of their external dependencies.
 
 This bundle is maintained Yichun Zhang (agentzh).
@@ -87,7 +87,7 @@ For Bundle Maintainers
 
 The bundle's source is at the following git repository:
 
-https://github.com/openresty/ngx_openresty
+https://github.com/openresty/openresty
 
 To reproduce the bundle tarball, just do
 
@@ -126,7 +126,7 @@ Report Bugs
 
 You're very welcome to report issues on GitHub:
 
-https://github.com/agentzh/ngx_openresty/issues
+https://github.com/openresty/openresty/issues
 
 [Back to TOC](#table-of-contents)
 
@@ -135,7 +135,7 @@ Copyright & License
 
 The bundle itself is licensed under the 2-clause BSD license.
 
-Copyright (c) 2011-2015, Yichun "agentzh" Zhang (章亦春) <agentzh@gmail.com>, CloudFlare Inc.
+Copyright (c) 2011-2016, Yichun "agentzh" Zhang (章亦春) <agentzh@gmail.com>, CloudFlare Inc.
 
 This module is licensed under the terms of the BSD license.
 

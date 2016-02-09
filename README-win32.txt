@@ -139,13 +139,13 @@ Details About The Building Process
 
     We automate these commands in a dedicated shell script named
     build-win32.sh
-    <https://github.com/openresty/ngx_openresty/blob/master/util/build-win32
-    .sh>.
+    <https://github.com/openresty/openresty/blob/master/util/build-win32.sh>
+    .
 
     Furthermore, we automate the packaging process of the resulting binaries
     and supporting files with this package-win32.sh
-    <https://github.com/openresty/ngx_openresty/blob/master/util/package-win
-    32.sh> script.
+    <https://github.com/openresty/openresty/blob/master/util/package-win32.s
+    h> script.
 
     Usually you can just download and use the binary distribution of
     OpenResty without installing the build toolchain.
