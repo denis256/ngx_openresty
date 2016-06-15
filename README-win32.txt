@@ -5,28 +5,28 @@ Description
     The binary distributions of OpenResty can be downloaded from the
     following web page:
 
-    <https://openresty.org/#Download>
+    https://openresty.org/#Download
 
     To start the NGINX server of the nginx server of the Win32 binary
     distribution of OpenResty:
 
-     start nginx
+        start nginx
 
     You can also specify the "-p PATH/" option to override the default
     server prefix, as in
 
-     cd /path/to/my/openresty/app/
-     start nginx -p $PWD
+        cd /path/to/my/openresty/app/
+        start nginx -p $PWD
 
     Then you can use the "tasklist" command to check the nginx processes
     running in the background:
 
-     C:\> tasklist /fi "imagename eq nginx.exe"
- 
-     Image Name                     PID Session Name        Session#    Mem Usage
-     ========================= ======== ================ =========== ============
-     nginx.exe                     4616 Console                    1      7,412 K
-     nginx.exe                     5836 Console                    1      7,800 K
+        C:\> tasklist /fi "imagename eq nginx.exe"
+    
+        Image Name                     PID Session Name        Session#    Mem Usage
+        ========================= ======== ================ =========== ============
+        nginx.exe                     4616 Console                    1      7,412 K
+        nginx.exe                     5836 Console                    1      7,800 K
 
     One of the two processes is the master process while the other is the
     worker.
@@ -37,16 +37,16 @@ Description
 
     You can quickly shut down the server like this:
 
-     nginx -s stop
+        nginx -s stop
 
     or gracefully shut it down like this:
 
-     nginx -s quit
+        nginx -s quit
 
     You can also forcibly kill the nginx processes via their PIDs with
     "taskkill", as in
 
-     C:\> taskkill /pid 5488 /F
+        C:\> taskkill /pid 5488 /F
 
     where the PID (5488 in this example) can be found via the aforementioned
     "tasklist" command.
@@ -60,8 +60,8 @@ Description
 
     You can run the "resty" script like this:
 
-     C:\> resty -e "ngx.say('Hello, OpenResty!')"
-     Hello, OpenResty!
+        C:\> resty -e "ngx.say('Hello, OpenResty!')"
+        Hello, OpenResty!
 
     The "resty" command-line utility requires a Perl interpreter installed
     in your system and visible to your PATH environment. Any perl
@@ -112,27 +112,27 @@ Details About The Building Process
     toolchain, including MinGW gcc 4.8.1, MSYS perl, MSYS bash, MSYS make,
     and etc. Basically, it is currently built via the following cmmands:
 
-     mkdir -p objs/lib || exit 1
-     cd objs/lib || exit 1
-     ls ../../..
-     tar -xf ../../../openssl-1.0.2d.tar.gz
-     tar -xf ../../../zlib-1.2.8.tar.gz
-     tar -xf ../../../pcre-8.37.tar.gz
-     cd ../..
-     ./configure --with-cc=gcc \
-         --prefix= \
-         --with-cc-opt='-DFD_SETSIZE=1024' \
-         --with-select_module \
-         --with-ipv6 \
-         --sbin-path=nginx.exe \
-         --with-pcre-jit \
-         --with-luajit-xcflags="-DLUAJIT_NUMMODE=2 -DLUAJIT_ENABLE_LUA52COMPAT" \
-         --with-pcre=objs/lib/pcre-8.37 \
-         --with-zlib=objs/lib/zlib-1.2.8 \
-         --with-openssl=objs/lib/openssl-1.0.2d \
-         -j5
-     make
-     make install
+        mkdir -p objs/lib || exit 1
+        cd objs/lib || exit 1
+        ls ../../..
+        tar -xf ../../../openssl-1.0.2d.tar.gz
+        tar -xf ../../../zlib-1.2.8.tar.gz
+        tar -xf ../../../pcre-8.37.tar.gz
+        cd ../..
+        ./configure --with-cc=gcc \
+            --prefix= \
+            --with-cc-opt='-DFD_SETSIZE=1024' \
+            --with-select_module \
+            --with-ipv6 \
+            --sbin-path=nginx.exe \
+            --with-pcre-jit \
+            --with-luajit-xcflags="-DLUAJIT_NUMMODE=2 -DLUAJIT_ENABLE_LUA52COMPAT" \
+            --with-pcre=objs/lib/pcre-8.37 \
+            --with-zlib=objs/lib/zlib-1.2.8 \
+            --with-openssl=objs/lib/openssl-1.0.2d \
+            -j5
+        make
+        make install
 
     where the dependency library source tarballs for OpenSSL, Zlib, and PCRE
     are downloaded from their official sites, respectively.
@@ -151,12 +151,13 @@ Details About The Building Process
     OpenResty without installing the build toolchain.
 
 Author
-    Yichun "agentzh" Zhang , CloudFlare Inc.
+    Yichun "agentzh" Zhang <agentzh@gmail.com>, CloudFlare Inc.
 
 Copyright & License
     This module is licensed under the BSD license.
 
-    Copyright (C) 2015, by Yichun "agentzh" Zhang (章亦春) , CloudFlare Inc.
+    Copyright (C) 2015-2016, by Yichun "agentzh" Zhang (章亦春)
+    <agentzh@gmail.com>, CloudFlare Inc.
 
     All rights reserved.
 

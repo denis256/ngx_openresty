@@ -5,8 +5,8 @@ This repository is basically a place for me to store the latest OpenResty + Ngin
 
 Contains:
 ---------
-* OpenResty 1.9.7.3
-* Nginx 1.9.7
+* OpenResty 1.9.15.1
+* Nginx 1.9.15
 * LuaJit
 
 Built-in modules:
@@ -23,9 +23,10 @@ Third party modules:
 --------------------
 * Upload Progress
 * Auth Digest
-* ngx_pagespeed 1.10.33.4
 * Upstream Fair Load Balancer
 * Mod Zip
+* Cache Purge
+* NAXSI
 
 This is how you configure it:
 
@@ -40,9 +41,10 @@ This is how you configure it:
     --with-http_geoip_module \
     --add-module=packages/nginx-upload-progress-module-0.9.1 \
     --add-module=packages/nginx-http-auth-digest-master \
-    --add-module=packages/ngx_pagespeed-release-1.10.33.4-beta \
     --add-module=packages/nginx-upstream-fair-master \
     --add-module=packages/mod_zip-master \
+    --add-module=packages/ngx_cache_purge-2.3 \
+    --add-module=packages/naxsi-0.54/naxsi_src \
     -j4
 
 Name
@@ -97,13 +99,12 @@ make
 
 at the top of the bundle source tree.
 
-Please note that you may need to install some extra dependencies, like `perl`, `dos2unix` and
-the Perl CPAN mdoule `Markdown::Pod`. On Fedora 22, for example, installing the dependencies
+Please note that you may need to install some extra dependencies, like `perl` and `dos2unix`.
+On Fedora 22, for example, installing the dependencies
 is as simple as running the following commands:
 
 ```bash
 sudo dnf install perl dos2unix
-sudo cpan Markdown::Pod
 ```
 
 [Back to TOC](#table-of-contents)
