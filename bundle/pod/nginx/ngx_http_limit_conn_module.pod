@@ -74,8 +74,8 @@ B<context:> I<location>
 Sets the shared memory zone
 and the maximum allowed number of connections for a given key value.
 When this limit is exceeded, the server will return the
-C<503> (C<Service Temporarily Unavailable>)
-error in reply to a request.
+error
+in reply to a request.
 For example, the directives
 
     
@@ -248,8 +248,8 @@ on 32-bit platforms and 64 bytes on 64-bit platforms.
 One megabyte zone can keep about 32 thousand 32-byte states
 or about 16 thousand 64-byte states.
 If the zone storage is exhausted, the server will return the
-C<503> (C<Service Temporarily Unavailable>)
-error to all further requests.
+error
+to all further requests.
 
 
 

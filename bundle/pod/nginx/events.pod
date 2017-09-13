@@ -65,7 +65,7 @@ can be used to forcibly enable or disable the build of this module.
 
 
 C<kqueue>E<mdash>efficient method used on
-FreeBSD 4.1+, OpenBSD 2.9+, NetBSD 2.0, and Mac OS X.
+FreeBSD 4.1+, OpenBSD 2.9+, NetBSD 2.0, and macOS.
 
 
 
@@ -77,6 +77,13 @@ FreeBSD 4.1+, OpenBSD 2.9+, NetBSD 2.0, and Mac OS X.
 
 C<epoll>E<mdash>efficient method used on
 Linux 2.6+.
+
+B<NOTE>
+
+The C<EPOLLRDHUP> (Linux 2.6.17, glibc 2.8)
+and C<EPOLLEXCLUSIVE> (Linux 4.5, glibc 2.24)
+flags are supported since 1.11.3.
+
 
 B<NOTE>
 
@@ -104,8 +111,9 @@ and Tru64 UNIX 5.1A+.
 
 
 
-C<eventport>E<mdash>event ports, efficient method
-used on Solaris 10.
+C<eventport>E<mdash>event ports, method
+used on Solaris 10+ (due to known issues,
+it is recommended using the C<E<sol>devE<sol>poll> method instead).
 
 
 

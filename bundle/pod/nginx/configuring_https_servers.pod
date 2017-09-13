@@ -15,8 +15,11 @@ To configure an HTTPS server, the C<ssl> parameter
 must be enabled on
 L<listening sockets|ngx_http_core_module>
 in the L<ngx_http_core_module> block,
-and the locations of the server certificate
-and private key files should be specified:
+and the locations of the
+L<server certificate|ngx_http_ssl_module>
+and
+L<private key|ngx_http_ssl_module>
+files should be specified:
 
 
     
@@ -72,11 +75,15 @@ changed several times.
 
 
 SSL operations consume extra CPU resources.
-On multi-processor systems several worker processes should be run,
+On multi-processor systems several
+L<worker processes|ngx_core_module>
+should be run,
 no less than the number of available CPU cores.
 The most CPU-intensive operation is the SSL handshake.
 There are two ways to minimize the number of these operations per client:
-the first is by enabling keepalive connections to send several
+the first is by enabling
+L<keepalive|ngx_http_core_module>
+connections to send several
 requests via one connection and the second is to reuse SSL session
 parameters to avoid SSL handshakes for parallel and subsequent connections.
 The sessions are stored in an SSL session cache shared between workers
@@ -511,7 +518,7 @@ C<default> parameter.
 
 =item *
 
-SNI has been supported since 0.5.32.
+SNI has been supported since 0.5.23.
 
 
 

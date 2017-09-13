@@ -47,7 +47,8 @@ directive.
 
 
 
-Dynamically configurable group,
+Dynamically configurable group with
+periodic L<health checks|ngx_stream_upstream_hc_module> is
 available as part of our
 commercial subscription:
 
@@ -179,6 +180,27 @@ sets the weight of the server, by default, 1.
 
 
 =item 
+C<max_conns>=I<C<number>>
+
+
+
+
+
+limits the maximum I<C<number>> of simultaneous
+connections to the proxied server (1.11.5).
+Default value is zero, meaning there is no limit.
+If the server group does not reside in the shared memory,
+the limitation works per each worker process.
+
+B<NOTE>
+
+Prior to version 1.11.5, this parameter was available as part of our
+commercial subscription.
+
+
+
+
+=item 
 C<max_fails>=I<C<number>>
 
 
@@ -268,19 +290,6 @@ the following parameters are available as part of our
 commercial subscription:
 
 =over
-
-
-
-=item 
-C<max_conns>=I<C<number>>
-
-
-
-
-
-limits the maximum I<C<number>> of simultaneous connections to the
-proxied server.
-Default value is zero, meaning there is no limit.
 
 
 
@@ -384,10 +393,17 @@ C<slow_start>=I<C<time>>
 
 
 sets the I<C<time>> during which the server will recover its weight
-from zero to a nominal value,
+from zero to a nominal value, when unhealthy server becomes
+L<healthy|ngx_stream_upstream_hc_module>,
 or when the server becomes available after a period of time
 it was considered unavailable.
 Default value is zero, i.e. slow start is disabled.
+
+B<NOTE>
+
+The parameter cannot be used along with the
+L</hash> load balancing method.
+
 
 
 
@@ -471,6 +487,23 @@ This directive appeared in version 1.9.7.
 
 Specifies a I<C<file>> that keeps the state
 of the dynamically configurable group.
+
+
+
+
+
+Examples:
+
+    
+    state /var/lib/nginx/state/servers.conf; # path for Linux
+    state /var/db/nginx/state/servers.conf;  # path for FreeBSD
+
+
+
+
+
+
+
 The state is currently limited to the list of servers with their parameters.
 The file is read when parsing the configuration and is updated each time
 the upstream configuration is
@@ -524,8 +557,14 @@ B<context:> I<upstream>
 
 Specifies a load balancing method for a server group
 where client-server mapping is based on the hashed I<C<key>> value.
-Currently, the only supported value for the C<key>
-is the client remote address specified as C<$remote_addr>.
+The I<C<key>> can contain text, variables,
+and their combinations (1.11.2).
+Usage example:
+
+    
+    hash $remote_addr;
+
+
 Note that adding or removing a server from the group
 may result in remapping most of the keys to different servers.
 The method is compatible with the
@@ -580,9 +619,11 @@ weighted round-robin balancing method.
 =head2 least_time
 
 
-B<syntax:> least_time I<C<connect> E<verbar>
-     C<first_byte> E<verbar>
-     C<last_byte>>
+B<syntax:> least_time I<
+    C<connect> E<verbar>
+    C<first_byte> E<verbar>
+    C<last_byte>
+    [C<inflight>]>
 
 
 
@@ -608,6 +649,14 @@ If the C<first_byte> parameter is specified,
 time to receive the first byte of data is used.
 If the C<last_byte> is specified,
 time to receive the last byte of data is used.
+If the C<inflight> parameter is specified (1.11.6),
+incomplete connections are also taken into account.
+
+B<NOTE>
+
+Prior to version 1.11.6,
+incomplete connections were taken into account by default.
+
 
 
 
@@ -626,364 +675,94 @@ commercial subscription.
 
 
 
-=head2 health_check
-
-
-B<syntax:> health_check I<[I<C<parameters>>]>
+=head1 Embedded Variables
 
 
 
-B<context:> I<server>
-
-
-
-
-
-Enables periodic health checks of the servers in a
-group.
-
-
-
-
-
-The following optional parameters are supported:
+The C<ngx_stream_upstream_module> module
+supports the following embedded variables:
 
 =over
 
 
 
-=item 
-C<interval>=I<C<time>>
+=item C<$upstream_addr>
 
 
 
 
-
-sets the interval between two consecutive health checks,
-by default, 5 seconds;
-
-
-
-=item 
-C<fails>=I<C<number>>
+keeps the IP address and port,
+or the path to the UNIX-domain socket of the upstream server (1.11.4).
+If several servers were contacted during proxying,
+their addresses are separated by commas, e.g.
+“C<192.168.1.1:12345, 192.168.1.2:12345, unix:E<sol>tmpE<sol>sock>”.
 
 
 
-
-
-sets the number of consecutive failed health checks of a particular server
-after which this server will be considered unhealthy,
-by default, 1;
-
-
-
-=item 
-C<passes>=I<C<number>>
+=item C<$upstream_bytes_sent>
 
 
 
 
+number of bytes sent to an upstream server (1.11.4).
+Values from several connections
+are separated by commas like addresses in the
+$upstream_addr variable.
 
-sets the number of consecutive passed health checks of a particular server
-after which the server will be considered healthy,
-by default, 1;
 
 
-
-=item 
-C<match>=I<C<name>>
-
+=item C<$upstream_bytes_received>
 
 
 
 
-specifies the C<match> block configuring the tests that a
-successful connection should pass in order for a health check to pass.
-By default,
-only the ability to establish a TCP connection with the server is checked;
+number of bytes received from an upstream server (1.11.4).
+Values from several connections
+are separated by commas like addresses in the
+$upstream_addr variable.
 
 
 
-=item 
-C<port>=I<C<number>>
-
-
-
-
-
-defines the port used when connecting to a server
-to perform a health check (1.9.7);
-by default, equals the L</server> port;
-
-
-
-=item 
-C<udp>
+=item C<$upstream_connect_time>
 
 
 
 
+time to connect to the upstream server (1.11.4);
+the time is kept in seconds with millisecond resolution.
+Times of several connections
+are separated by commas like addresses in the
+$upstream_addr variable.
 
-specifies that the C<UDP> protocol should be used for
-health checks instead of the default C<TCP> protocol (1.9.13);
-requires a match block with the
-send and expect
-parameters.
+
+
+=item C<$upstream_first_byte_time>
+
+
+
+
+time to receive the first byte of data (1.11.4);
+the time is kept in seconds with millisecond resolution.
+Times of several connections
+are separated by commas like addresses in the
+$upstream_addr variable.
+
+
+
+=item C<$upstream_session_time>
+
+
+
+
+session duration in seconds with millisecond resolution (1.11.4).
+Times of several connections
+are separated by commas like addresses in the
+$upstream_addr variable.
 
 
 
 
 =back
-
-
-
-
-
-
-
-For example,
-
-    
-    server {
-        proxy_pass backend;
-        health_check;
-    }
-
-
-will check the ability to establish a TCP connection to each server
-in the C<backend> group every five seconds.
-When a connection to the server cannot be established,
-the health check will fail, and the server will
-be considered unhealthy.
-Client connections are not passed to unhealthy servers.
-
-
-
-
-
-Health checks can also be configured to test data obtained from the server.
-Tests are configured separately using the L</match> directive
-and referenced in the C<match> parameter.
-
-
-
-
-
-The server group must reside in the shared memory.
-
-
-
-
-
-If several health checks are defined for the same group of servers,
-a single failure of any check will make the corresponding server be
-considered unhealthy.
-
-
-
-
-
-
-B<NOTE>
-
-This directive is available as part of our
-commercial subscription.
-
-
-
-
-
-
-
-
-=head2 health_check_timeout
-
-
-B<syntax:> health_check_timeout I<I<C<timeout>>>
-
-
-B<default:> I<5s>
-
-
-B<context:> I<stream>
-
-
-B<context:> I<server>
-
-
-
-
-
-Overrides the
-L<ngx_stream_proxy_module>
-value for health checks.
-
-
-
-
-
-
-B<NOTE>
-
-This directive is available as part of our
-commercial subscription.
-
-
-
-
-
-
-
-
-=head2 match
-
-
-B<syntax:> match I<I<C<name>>  { B<...> } >
-
-
-
-B<context:> I<stream>
-
-
-
-
-
-Defines the named test set used to verify server responses to health checks.
-
-
-
-
-
-The following parameters can be configured:
-
-=over
-
-
-
-=item 
-C<send> I<C<string>>;
-
-
-
-
-
-sends a I<C<string>> to the server;
-
-
-
-=item 
-C<expect> I<C<string>> E<verbar>
-C<~> I<C<regex>>;
-
-
-
-
-
-a literal string (1.9.12) or a regular expression
-that the data obtained from the server should match.
-The regular expression is specified with the preceding
-“C<~*>” modifier (for case-insensitive matching), or the
-“C<~>” modifier (for case-sensitive matching).
-
-
-
-
-=back
-
-
-Both C<send> and C<expect> parameters
-can contain hexadecimal literals with the prefix “C<\x>”
-followed by two hex digits, for example, “C<\x80>” (1.9.12).
-
-
-
-
-
-Health check is passed if:
-
-=over
-
-
-
-=item *
-
-the TCP connection was successfully established;
-
-
-
-=item *
-
-the I<C<string>> from the C<send> parameter,
-if specified, was sent;
-
-
-
-=item *
-
-the data obtained from the server matched the string or regular expression
-from the C<expect> parameter, if specified;
-
-
-
-=item *
-
-the time elapsed does not exceed the value specified
-in the L</health_check_timeout> directive.
-
-
-
-=back
-
-
-
-
-
-
-
-Example:
-
-    
-    upstream backend {
-        zone     upstream_backend 10m;
-        server   127.0.0.1:12345;
-    }
-    
-    match http {
-        send     "GET / HTTP/1.0\r\nHost: localhost\r\n\r\n";
-        expect ~ "200 OK";
-    }
-    
-    server {
-        listen       12346;
-        proxy_pass   backend;
-        health_check match=http;
-    }
-
-
-
-
-
-
-
-
-B<NOTE>
-
-Only the first
-L<ngx_stream_proxy_module>
-bytes of data obtained from the server are examined.
-
-
-
-
-
-
-
-B<NOTE>
-
-This directive is available as part of our
-commercial subscription.
-
-
 
 
 

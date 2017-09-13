@@ -2,10 +2,10 @@ Name
     README-win32 - README for the Windows 32-bit build of OpenResty
 
 Description
-    The binary distributions of OpenResty can be downloaded from the
-    following web page:
+    The official binary Win32 distribution of OpenResty can be downloaded
+    from the following web page:
 
-    https://openresty.org/#Download
+    https://openresty.org/en/download.html
 
     To start the NGINX server of the nginx server of the Win32 binary
     distribution of OpenResty:
@@ -112,25 +112,58 @@ Details About The Building Process
     toolchain, including MinGW gcc 4.8.1, MSYS perl, MSYS bash, MSYS make,
     and etc. Basically, it is currently built via the following cmmands:
 
+        PCRE=pcre-8.39
+        ZLIB=zlib-1.2.8
+        OPENSSL=openssl-1.0.2j
+    
         mkdir -p objs/lib || exit 1
         cd objs/lib || exit 1
         ls ../../..
-        tar -xf ../../../openssl-1.0.2d.tar.gz
-        tar -xf ../../../zlib-1.2.8.tar.gz
-        tar -xf ../../../pcre-8.37.tar.gz
+        tar -xf ../../../$OPENSSL.tar.gz || exit 1
+        tar -xf ../../../$ZLIB.tar.gz || exit 1
+        tar -xf ../../../$PCRE.tar.gz || exit 1
         cd ../..
-        ./configure --with-cc=gcc \
+    
+        cd objs/lib/$OPENSSL || exit 1
+        patch -p1 < ../../../patches/openssl-1.0.2h-sess_set_get_cb_yield.patch || exit 1
+        cd ../../..
+    
+        ./configure \
+            --with-cc=gcc \
+            --with-ipv6 \
             --prefix= \
             --with-cc-opt='-DFD_SETSIZE=1024' \
-            --with-select_module \
-            --with-ipv6 \
             --sbin-path=nginx.exe \
             --with-pcre-jit \
+            --without-http_rds_json_module \
+            --without-http_rds_csv_module \
+            --without-lua_rds_parser \
+            --with-ipv6 \
+            --with-stream \
+            --with-stream_ssl_module \
+            --with-http_v2_module \
+            --without-mail_pop3_module \
+            --without-mail_imap_module \
+            --without-mail_smtp_module \
+            --with-http_stub_status_module \
+            --with-http_realip_module \
+            --with-http_addition_module \
+            --with-http_auth_request_module \
+            --with-http_secure_link_module \
+            --with-http_random_index_module \
+            --with-http_gzip_static_module \
+            --with-http_sub_module \
+            --with-http_dav_module \
+            --with-http_flv_module \
+            --with-http_mp4_module \
+            --with-http_gunzip_module \
+            --with-select_module \
             --with-luajit-xcflags="-DLUAJIT_NUMMODE=2 -DLUAJIT_ENABLE_LUA52COMPAT" \
-            --with-pcre=objs/lib/pcre-8.37 \
-            --with-zlib=objs/lib/zlib-1.2.8 \
-            --with-openssl=objs/lib/openssl-1.0.2d \
-            -j5
+            --with-pcre=objs/lib/$PCRE \
+            --with-zlib=objs/lib/$ZLIB \
+            --with-openssl=objs/lib/$OPENSSL \
+            -j5 || exit 1
+    
         make
         make install
 
@@ -151,13 +184,13 @@ Details About The Building Process
     OpenResty without installing the build toolchain.
 
 Author
-    Yichun "agentzh" Zhang <agentzh@gmail.com>, CloudFlare Inc.
+    Yichun "agentzh" Zhang <agentzh@gmail.com>, OpenResty Inc.
 
 Copyright & License
     This module is licensed under the BSD license.
 
     Copyright (C) 2015-2016, by Yichun "agentzh" Zhang (章亦春)
-    <agentzh@gmail.com>, CloudFlare Inc.
+    <agentzh@gmail.com>, OpenResty Inc.
 
     All rights reserved.
 

@@ -22,7 +22,7 @@ Although nginx built with the L<--with-debug|debugging_log>
 option already provides a lot of information about request processing,
 it is sometimes desirable to trace particular parts of code path more
 thoroughly and at the same time omit the rest of debugging output.
-DTrace pid provider (available on Solaris, Mac OS X) is a useful tool to
+DTrace pid provider (available on Solaris, macOS) is a useful tool to
 explore userland program’s internals, since it doesn’t require any code
 changes and it can help with the task.
 A simple DTrace script to trace and print nginx function calls

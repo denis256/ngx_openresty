@@ -118,14 +118,6 @@ A worker can handle no more than 1024 simultaneous connections.
 
 =item *
 
-The cache and other modules which require shared memory support do not work
-on Windows Vista and later versions due to
-address space layout randomization being enabled in these Windows versions.
-
-
-
-=item *
-
 The UDP proxy functionality is not supported.
 
 

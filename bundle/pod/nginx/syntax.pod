@@ -20,6 +20,13 @@ Sizes can be specified in bytes, kilobytes
 
 
 
+Offsets may be also specified in gigabytes using
+C<g> or C<G> suffixes.
+
+
+
+
+
 Time intervals can be specified in milliseconds, seconds,
 minutes, hours, days and so on, using the following suffixes:
 

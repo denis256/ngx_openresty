@@ -48,7 +48,10 @@ external to nginx.
 =head2 memcached_bind
 
 
-B<syntax:> memcached_bind I<I<C<address>> [transparent] E<verbar> C<off>>
+B<syntax:> memcached_bind I<
+    I<C<address>>
+    [ C<transparent >] E<verbar>
+    C<off>>
 
 
 
@@ -69,12 +72,12 @@ This directive appeared in version 0.8.22.
 
 
 Makes outgoing connections to a memcached server originate
-from the specified local IP I<C<address>>.
+from the specified local IP address with an optional port (1.11.2).
 Parameter value can contain variables (1.3.12).
 The special value C<off> (1.3.12) cancels the effect
 of the C<memcached_bind> directive
 inherited from the previous configuration level, which allows the
-system to auto-assign the local IP address.
+system to auto-assign the local IP address and port.
 
 
 

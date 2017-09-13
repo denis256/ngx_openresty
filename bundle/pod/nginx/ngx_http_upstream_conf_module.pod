@@ -348,8 +348,8 @@ upstream server.
 
 Puts the
 L<http|ngx_http_upstream_module>
-upstream server in the “draining” mode (1.7.5).
-In this mode, only requests of the
+upstream server into the “draining” mode (1.7.5).
+In this mode, only requests
 L<bound|ngx_http_upstream_module> to the server
 will be proxied to it.
 

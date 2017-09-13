@@ -9,6 +9,46 @@ ngx_http_core_module - Module ngx_http_core_module
 
 =head1 Directives
 
+=head2 absolute_redirect
+
+
+B<syntax:> absolute_redirect I<C<on> E<verbar> C<off>>
+
+
+B<default:> I<on>
+
+
+B<context:> I<http>
+
+
+B<context:> I<server>
+
+
+B<context:> I<location>
+
+
+
+This directive appeared in version 1.11.8.
+
+
+
+
+
+If disabled, redirects issued by nginx will be relative.
+
+
+
+
+
+See also L</server_name_in_redirect>
+and L</port_in_redirect> directives.
+
+
+
+
+
+
+
 =head2 aio
 
 
@@ -53,6 +93,7 @@ on FreeBSD and Linux:
 
 
 On FreeBSD, AIO can be used starting from FreeBSDE<nbsp>4.3.
+Prior to FreeBSDE<nbsp>11.0,
 AIO can either be linked statically into a kernel:
 
     
@@ -705,7 +746,7 @@ This directive appeared in version 0.7.7.
 
 Enables the use of
 the C<O_DIRECT> flag (FreeBSD, Linux),
-the C<F_NOCACHE> flag (Mac OS X),
+the C<F_NOCACHE> flag (macOS),
 or the C<directio> function (Solaris),
 when reading files that are larger than or equal to
 the specified I<C<size>>.
@@ -935,10 +976,7 @@ B<context:> I<if in location>
 
 
 Defines the URI that will be shown for the specified errors.
-C<error_page> directives are inherited from the previous
-level only if there are no C<error_page>
-directives defined on the current level.
-A C<uri> value can contain variables.
+A I<C<uri>> value can contain variables.
 
 
 
@@ -951,6 +989,15 @@ Example:
     error_page 500 502 503 504 /50x.html;
 
 
+
+
+
+
+
+This causes an internal redirect to the specified I<C<uri>>
+with the client request method changed to “C<GET>”
+(for all methods other than
+“C<GET>” and “C<HEAD>”).
 
 
 
@@ -982,23 +1029,8 @@ or 404), it is possible to respond with the code it returns:
 
 
 
-It is also possible to use redirects for error processing:
-
-    
-    error_page 403      http://example.com/forbidden.html;
-    error_page 404 =301 http://example.com/notfound.html;
-
-
-In this case, by default, the response code 302 is returned to the client.
-It can only be changed to one of the redirect status
-codes (301, 302, 303, and 307).
-
-
-
-
-
-If there is no need to change URI during internal redirection it is
-possible to pass error processing into a named location:
+If there is no need to change URI and method during internal redirection
+it is possible to pass error processing into a named location:
 
     
     location / {
@@ -1018,9 +1050,33 @@ possible to pass error processing into a named location:
 
 B<NOTE>
 
-If C<uri> processing leads to an error,
+If I<C<uri>> processing leads to an error,
 the status code of the last occurred error is returned to the client.
 
+
+
+
+
+
+It is also possible to use URL redirects for error processing:
+
+    
+    error_page 403      http://example.com/forbidden.html;
+    error_page 404 =301 http://example.com/notfound.html;
+
+
+In this case, by default, the response code 302 is returned to the client.
+It can only be changed to one of the redirect status
+codes (301, 302, 303, 307, and 308).
+
+
+
+
+
+These directives are inherited from the previous level if and
+only if there are no
+C<error_page>
+directives defined on the current level.
 
 
 
@@ -1322,7 +1378,7 @@ browsers will be affected.
 The value C<msie6> disables keep-alive connections
 with old versions of MSIE, once a POST request is received.
 The value C<safari> disables keep-alive connections
-with Safari and Safari-like browsers on Mac OS X and Mac OS X-like
+with Safari and Safari-like browsers on macOS and macOS-like
 operating systems.
 The value C<none> enables keep-alive connections
 with all browsers.
@@ -1978,7 +2034,7 @@ C<fastopen>=I<C<number>>
 enables
 “L<TCP Fast Open|http://en.wikipedia.org/wiki/TCP_Fast_Open>”
 for the listening socket (1.5.8) and
-L<limits|http://tools.ietf.org/html/rfc7413#section-5.1>
+L<limits|https://tools.ietf.org/html/rfc7413#section-5.1>
 the maximum length for the queue of connections that have not yet completed
 the three-way handshake.
 
@@ -1986,7 +2042,7 @@ B<NOTE>
 
 Do not enable this feature unless the server can handle
 receiving the
-L<same SYN packet with data|http://tools.ietf.org/html/rfc7413#section-6.1> more than once.
+L<same SYN packet with data|https://tools.ietf.org/html/rfc7413#section-6.1> more than once.
 
 
 
@@ -2002,7 +2058,7 @@ sets the C<backlog> parameter in the
 C<listen> call that limits
 the maximum length for the queue of pending connections.
 By default,
-C<backlog> is set to -1 on FreeBSD, DragonFly BSD, and Mac OS X,
+C<backlog> is set to -1 on FreeBSD, DragonFly BSD, and macOS,
 and to 511 on other platforms.
 
 
@@ -2256,7 +2312,7 @@ mentioned below.
 
 
 
-For case-insensitive operating systems such as Mac OS X and Cygwin,
+For case-insensitive operating systems such as macOS and Cygwin,
 matching with prefix strings ignores a case (0.7.7).
 However, comparison is limited to one-byte locales.
 
@@ -2877,7 +2933,8 @@ B<context:> I<location>
 
 
 
-Enables or disables specifying the port in redirects issued by nginx.
+Enables or disables specifying the port in
+absolute redirects issued by nginx.
 
 
 
@@ -3138,6 +3195,12 @@ Before version 1.1.9, tuning of caching time was not possible,
 and nginx always cached answers for the duration of 5 minutes.
 
 
+B<NOTE>
+
+To prevent DNS spoofing, it is recommended
+configuring DNS servers in a properly secured trusted local network.
+
+
 
 
 
@@ -3260,8 +3323,10 @@ B<context:> I<location>
 Allows access if all (C<all>) or at least one
 (C<any>) of the
 L<ngx_http_access_module|ngx_http_access_module>,
-L<ngx_http_auth_basic_module|ngx_http_auth_basic_module> or
-L<ngx_http_auth_request_module|ngx_http_auth_request_module>
+L<ngx_http_auth_basic_module|ngx_http_auth_basic_module>,
+L<ngx_http_auth_request_module|ngx_http_auth_request_module>,
+or
+L<ngx_http_auth_jwt_module|ngx_http_auth_jwt_module>
 modules allow access.
 
 
@@ -3720,8 +3785,8 @@ B<context:> I<location>
 
 
 Enables or disables the use of the primary server name, specified by the
-L</server_name>
-directive, in redirects issued by nginx.
+L</server_name> directive,
+in absolute redirects issued by nginx.
 When the use of the primary server name is disabled, the name from the
 C<Host> request header field is used.
 If this field is not present, the IP address of the server is used.
@@ -3796,6 +3861,7 @@ L<document|hash>.
 B<syntax:> server_tokens I<
     C<on> E<verbar>
     C<off> E<verbar>
+    C<build> E<verbar>
     I<C<string>>>
 
 
@@ -3814,8 +3880,16 @@ B<context:> I<location>
 
 
 
-Enables or disables emitting nginx version in error messages and in the
+Enables or disables emitting nginx version on error pages and in the
 C<Server> response header field.
+
+
+
+
+
+The C<build> parameter (1.11.10) enables emitting
+a L<build name|configure>
+along with nginx version.
 
 
 
@@ -3824,7 +3898,7 @@ C<Server> response header field.
 Additionally, as part of our
 commercial subscription,
 starting from version 1.9.13
-the signature in error messages and
+the signature on error pages and
 the C<Server> response header field value
 can be set explicitly using the I<C<string>> with variables.
 An empty string disables the emission of the C<Server> field.
@@ -4660,7 +4734,8 @@ L<ngx_http_fastcgi_module>,
 L<ngx_http_uwsgi_module>,
 and
 L<ngx_http_scgi_module>
-directives.
+directives when the request body was read to
+a memory buffer.
 
 
 
@@ -4716,7 +4791,8 @@ directives, and the request URI
 
 
 
-unique request identifier (1.11.0)
+unique request identifier
+generated from 16 random bytes, in hexadecimal (1.11.0)
 
 
 
@@ -4775,6 +4851,17 @@ request scheme, “C<http>” or “C<https>”
 
 
 arbitrary response header field;
+the last part of a variable name is the field name converted
+to lower case with dashes replaced by underscores
+
+
+
+=item C<$sent_trailer_>I<C<name>>
+
+
+
+
+arbitrary field sent at the end of the response (1.13.2);
 the last part of a variable name is the field name converted
 to lower case with dashes replaced by underscores
 

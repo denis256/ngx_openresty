@@ -39,7 +39,10 @@ requests to another server.
 =head2 proxy_bind
 
 
-B<syntax:> proxy_bind I<I<C<address>> [transparent] E<verbar> C<off>>
+B<syntax:> proxy_bind I<
+    I<C<address>>
+    [C<transparent>] E<verbar>
+    C<off>>
 
 
 
@@ -60,12 +63,12 @@ This directive appeared in version 0.8.22.
 
 
 Makes outgoing connections to a proxied server originate
-from the specified local IP I<C<address>>.
+from the specified local IP address with an optional port (1.11.2).
 Parameter value can contain variables (1.3.12).
 The special value C<off> (1.3.12) cancels the effect
 of the C<proxy_bind> directive
 inherited from the previous configuration level, which allows the
-system to auto-assign the local IP address.
+system to auto-assign the local IP address and port.
 
 
 
@@ -283,6 +286,44 @@ The same zone can be used in several places.
 Parameter value can contain variables (1.7.9).
 The C<off> parameter disables caching inherited
 from the previous configuration level.
+
+
+
+
+
+
+
+=head2 proxy_cache_background_update
+
+
+B<syntax:> proxy_cache_background_update I<C<on> E<verbar> C<off>>
+
+
+B<default:> I<off>
+
+
+B<context:> I<http>
+
+
+B<context:> I<server>
+
+
+B<context:> I<location>
+
+
+
+This directive appeared in version 1.11.10.
+
+
+
+
+
+Allows starting a background subrequest
+to update an expired cache item,
+while a stale cached response is returned to the client.
+Note that it is necessary to
+allow
+the usage of a stale cached response when it is being updated.
 
 
 
@@ -518,6 +559,40 @@ Before 1.7.8, the response could be cached.
 
 
 
+=head2 proxy_cache_max_range_offset
+
+
+B<syntax:> proxy_cache_max_range_offset I<I<C<number>>>
+
+
+
+B<context:> I<http>
+
+
+B<context:> I<server>
+
+
+B<context:> I<location>
+
+
+
+This directive appeared in version 1.11.6.
+
+
+
+
+
+Sets an offset in bytes for byte-range requests.
+If the range is beyond the offset,
+the range request will be passed to the proxied server
+and the response will not be cached.
+
+
+
+
+
+
+
 =head2 proxy_cache_methods
 
 
@@ -599,6 +674,9 @@ B<syntax:> proxy_cache_path I<
     C<keys_zone>=I<C<name>>:I<C<size>>
     [C<inactive>=I<C<time>>]
     [C<max_size>=I<C<size>>]
+    [C<manager_files>=I<C<number>>]
+    [C<manager_sleep>=I<C<time>>]
+    [C<manager_threshold>=I<C<time>>]
     [C<loader_files>=I<C<number>>]
     [C<loader_sleep>=I<C<time>>]
     [C<loader_threshold>=I<C<time>>]
@@ -620,7 +698,8 @@ Cache data are stored in files.
 The file name in a cache is a result of
 applying the MD5 function to the
 cache key.
-The C<levels> parameter defines hierarchy levels of a cache.
+The C<levels> parameter defines hierarchy levels of a cache:
+from 1 to 3, each level accepts values 1 or 2.
 For example, in the following configuration
 
     
@@ -680,6 +759,16 @@ By default, C<inactive> is set to 10 minutes.
 The special “cache manager” process monitors the maximum cache size set
 by the C<max_size> parameter.
 When this size is exceeded, it removes the least recently used data.
+The data is removed in iterations configured by
+C<manager_files>,
+C<manager_threshold>, and
+C<manager_sleep> parameters (1.11.5).
+During one iteration no more than C<manager_files> items
+are deleted (by default, 100).
+The duration of one iteration is limited by the
+C<manager_threshold> parameter (by default, 200 milliseconds).
+Between iterations, a pause configured by the C<manager_sleep>
+parameter (by default, 50 milliseconds) is made.
 
 
 
@@ -688,7 +777,7 @@ When this size is exceeded, it removes the least recently used data.
 A minute after the start the special “cache loader” process is activated.
 It loads information about previously cached data stored on file system
 into a cache zone.
-The loading is done in iterations.
+The loading is also done in iterations.
 During one iteration no more than C<loader_files> items
 are loaded (by default, 100).
 Besides, the duration of one iteration is limited by the
@@ -770,6 +859,18 @@ By default, C<purger_sleep> is set to 50 milliseconds.
 
 =back
 
+
+
+
+
+
+
+
+B<NOTE>
+
+In versions 1.7.3, 1.7.7, and 1.11.10 cache header format has been changed.
+Previously cached responses will be considered invalid
+after upgrading to a newer nginx version.
 
 
 
@@ -908,6 +1009,7 @@ B<syntax:> proxy_cache_use_stale I<
     C<http_504> E<verbar>
     C<http_403> E<verbar>
     C<http_404> E<verbar>
+    C<http_429> E<verbar>
     C<off>
     ...>
 
@@ -928,7 +1030,7 @@ B<context:> I<location>
 
 
 Determines in which cases a stale cached response can be used
-when an error occurs during communication with the proxied server.
+during communication with the proxied server.
 The directive’s parameters match the parameters of the
 L</proxy_next_upstream> directive.
 
@@ -948,6 +1050,42 @@ Additionally, the C<updating> parameter permits
 using a stale cached response if it is currently being updated.
 This allows minimizing the number of accesses to proxied servers
 when updating cached data.
+
+
+
+
+
+Using a stale cached response
+can also be enabled directly in the response header
+for a specified number of seconds after the response became stale (1.11.10).
+This has lower priority than using the directive parameters.
+
+=over
+
+
+
+
+=item *
+
+The
+“L<stale-while-revalidate|https://tools.ietf.org/html/rfc5861#section-3>”
+extension of the C<Cache-Control> header field permits
+using a stale cached response if it is currently being updated.
+
+
+
+=item *
+
+The
+“L<stale-if-error|https://tools.ietf.org/html/rfc5861#section-4>”
+extension of the C<Cache-Control> header field permits
+using a stale cached response in case of an error.
+
+
+
+=back
+
+
 
 
 
@@ -1641,7 +1779,8 @@ B<context:> I<location>
 
 
 Determines whether proxied responses with codes greater than or equal
-to 300 should be passed to a client or be redirected to nginx for processing
+to 300 should be passed to a client
+or be intercepted and redirected to nginx for processing
 with the L<ngx_http_core_module> directive.
 
 
@@ -1765,6 +1904,7 @@ B<context:> I<location>
 
 Specifies the HTTP I<C<method>> to use in requests forwarded
 to the proxied server instead of the method from the client request.
+Parameter value can contain variables (1.11.6).
 
 
 
@@ -1785,6 +1925,7 @@ B<syntax:> proxy_next_upstream I<
     C<http_504> E<verbar>
     C<http_403> E<verbar>
     C<http_404> E<verbar>
+    C<http_429> E<verbar>
     C<non_idempotent> E<verbar>
     C<off>
     ...>
@@ -1876,12 +2017,19 @@ a server returned a response with the code 403;
 a server returned a response with the code 404;
 
 
+=item C<http_429>
+
+
+
+a server returned a response with the code 429 (1.11.13);
+
+
 =item C<non_idempotent>
 
 
 
 normally, requests with a
-L<non-idempotent|http://tools.ietf.org/html/rfc7231#section-4.2.2>
+L<non-idempotent|https://tools.ietf.org/html/rfc7231#section-4.2.2>
 method
 (C<POST>, C<LOCK>, C<PATCH>)
 are not passed to the next server
@@ -1922,7 +2070,8 @@ The cases of C<error>, C<timeout> and
 C<invalid_header> are always considered unsuccessful attempts,
 even if they are not specified in the directive.
 The cases of C<http_500>, C<http_502>,
-C<http_503> and C<http_504> are
+C<http_503>, C<http_504>,
+and C<http_429> are
 considered unsuccessful attempts only if they are specified in the directive.
 The cases of C<http_403> and C<http_404>
 are never considered unsuccessful attempts.
@@ -2098,6 +2247,16 @@ L<server group|ngx_http_upstream_module>.
 
 
 
+Parameter value can contain variables.
+In this case, if an address is specified as a domain name,
+the name is searched among the described server groups,
+and, if not found, is determined using a
+L<ngx_http_core_module>.
+
+
+
+
+
 A request URI is passed to the server as follows:
 
 =over
@@ -2163,10 +2322,12 @@ In some cases, the part of a request URI to be replaced cannot be determined:
 
 =item *
 
-When location is specified using a regular expression.
+When location is specified using a regular expression,
+and also inside named locations.
 
 
-In this case, the directive should be specified without a URI.
+In these cases,
+C<proxy_pass> should be specified without a URI.
 
 
 
@@ -2194,36 +2355,25 @@ the full changed request URI is passed to the server.
 
 
 
+
+=item *
+
+When variables are used in C<proxy_pass>:
+
+    
+    location /name/ {
+        proxy_pass http://127.0.0.1$request_uri;
+    }
+
+
+In this case, if URI is specified in the directive,
+it is passed to the server as is,
+replacing the original request URI.
+
+
 =back
 
 
-
-
-
-
-
-A server name, its port and the passed URI can also be specified using
-variables:
-
-    
-    proxy_pass http://$host$uri;
-
-
-or even like this:
-
-    
-    proxy_pass $request;
-
-
-
-
-
-
-
-In this case, the server name is searched among the described
-L<server groups|ngx_http_upstream_module>,
-and, if not found, is determined using a
-L<ngx_http_core_module>.
 
 
 
@@ -3119,7 +3269,8 @@ B<syntax:> proxy_ssl_protocols I<
     [C<SSLv3>]
     [C<TLSv1>]
     [C<TLSv1.1>]
-    [C<TLSv1.2>]>
+    [C<TLSv1.2>]
+    [C<TLSv1.3>]>
 
 
 B<default:> I<TLSv1 TLSv1.1 TLSv1.2>

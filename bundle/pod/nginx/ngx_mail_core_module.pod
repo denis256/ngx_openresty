@@ -78,6 +78,8 @@ B<syntax:> listen I<
     I<C<address>>:I<C<port>>
     [C<ssl>]
     [C<backlog>=I<C<number>>]
+    [C<rcvbuf>=I<C<size>>]
+    [C<sndbuf>=I<C<size>>]
     [C<bind>]
     [C<ipv6only>=C<on>E<verbar>C<off>]
     [C<so_keepalive>=C<on>E<verbar>C<off>E<verbar>[I<C<keepidle>>]:[I<C<keepintvl>>]:[I<C<keepcnt>>]]>
@@ -154,8 +156,32 @@ sets the C<backlog> parameter in the
 C<listen> call that limits
 the maximum length for the queue of pending connections (1.9.2).
 By default,
-C<backlog> is set to -1 on FreeBSD, DragonFly BSD, and Mac OS X,
+C<backlog> is set to -1 on FreeBSD, DragonFly BSD, and macOS,
 and to 511 on other platforms.
+
+
+
+=item 
+C<rcvbuf>=I<C<size>>
+
+
+
+
+
+sets the receive buffer size
+(the C<SO_RCVBUF> option) for the listening socket (1.11.13).
+
+
+
+=item 
+C<sndbuf>=I<C<size>>
+
+
+
+
+
+sets the send buffer size
+(the C<SO_SNDBUF> option) for the listening socket (1.11.13).
 
 
 

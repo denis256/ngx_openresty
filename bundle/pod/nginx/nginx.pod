@@ -129,6 +129,38 @@ L<configuring_https_servers>
 
 =item *
 
+L<stream_processing>
+
+
+
+=back
+
+
+
+
+=over
+
+
+
+
+=item *
+
+L<njs_about>
+
+
+
+=back
+
+
+
+
+=over
+
+
+
+
+=item *
+
 L<Chapter “nginx” in
 “The Architecture of Open Source Applications”|http://www.aosabook.org/en/nginx.html>
 
@@ -220,6 +252,12 @@ L<contributing_changes>
 
 
 
+=item *
+
+L<development_guide>
+
+
+
 =back
 
 
@@ -304,6 +342,12 @@ L<ngx_http_addition_module|ngx_http_addition_module>
 =item *
 
 L<ngx_http_auth_basic_module|ngx_http_auth_basic_module>
+
+
+
+=item *
+
+L<ngx_http_auth_jwt_module|ngx_http_auth_jwt_module>
 
 
 
@@ -417,6 +461,12 @@ L<ngx_http_index_module|ngx_http_index_module>
 
 =item *
 
+L<ngx_http_js_module|ngx_http_js_module>
+
+
+
+=item *
+
 L<ngx_http_limit_conn_module|ngx_http_limit_conn_module>
 
 
@@ -442,6 +492,12 @@ L<ngx_http_map_module|ngx_http_map_module>
 =item *
 
 L<ngx_http_memcached_module|ngx_http_memcached_module>
+
+
+
+=item *
+
+L<ngx_http_mirror_module|ngx_http_mirror_module>
 
 
 
@@ -567,6 +623,12 @@ L<ngx_http_upstream_conf_module|ngx_http_upstream_conf_module>
 
 =item *
 
+L<ngx_http_upstream_hc_module|ngx_http_upstream_hc_module>
+
+
+
+=item *
+
 L<ngx_http_userid_module|ngx_http_userid_module>
 
 
@@ -673,7 +735,37 @@ L<ngx_stream_access_module|ngx_stream_access_module>
 
 =item *
 
+L<ngx_stream_geo_module|ngx_stream_geo_module>
+
+
+
+=item *
+
+L<ngx_stream_geoip_module|ngx_stream_geoip_module>
+
+
+
+=item *
+
+L<ngx_stream_js_module|ngx_stream_js_module>
+
+
+
+=item *
+
 L<ngx_stream_limit_conn_module|ngx_stream_limit_conn_module>
+
+
+
+=item *
+
+L<ngx_stream_log_module|ngx_stream_log_module>
+
+
+
+=item *
+
+L<ngx_stream_map_module|ngx_stream_map_module>
 
 
 
@@ -685,13 +777,63 @@ L<ngx_stream_proxy_module|ngx_stream_proxy_module>
 
 =item *
 
+L<ngx_stream_realip_module|ngx_stream_realip_module>
+
+
+
+=item *
+
+L<ngx_stream_return_module|ngx_stream_return_module>
+
+
+
+=item *
+
+L<ngx_stream_split_clients_module|ngx_stream_split_clients_module>
+
+
+
+=item *
+
 L<ngx_stream_ssl_module|ngx_stream_ssl_module>
 
 
 
 =item *
 
+L<ngx_stream_ssl_preread_module|ngx_stream_ssl_preread_module>
+
+
+
+=item *
+
 L<ngx_stream_upstream_module|ngx_stream_upstream_module>
+
+
+
+=item *
+
+L<ngx_stream_upstream_hc_module|ngx_stream_upstream_hc_module>
+
+
+
+=back
+
+
+
+
+
+
+
+
+=over
+
+
+
+
+=item *
+
+L<ngx_google_perftools_module|ngx_google_perftools_module>
 
 
 

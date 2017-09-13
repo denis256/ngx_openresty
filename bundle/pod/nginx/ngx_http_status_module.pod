@@ -232,7 +232,7 @@ The following status information is provided:
 
 
 Version of the provided data set.
-The current version is 6.
+The current version is 8.
 
 
 
@@ -242,6 +242,15 @@ The current version is 6.
 
 
 Version of nginx.
+
+
+
+=item C<nginx_build>
+
+
+
+
+Name of nginx build.
 
 
 
@@ -288,6 +297,16 @@ Current time in milliseconds since Epoch.
 
 
 The ID of the worker process that handled status request.
+
+
+
+=item C<ppid>
+
+
+
+
+The ID of the master process that started
+the worker process.
 
 
 
@@ -557,6 +576,114 @@ The total number of bytes sent to clients.
 
 
 
+=item C<slabs>
+
+
+
+
+For each shared memory zone that uses slab allocator:
+
+=over
+
+
+
+=item C<pages>
+
+
+
+
+
+=over
+
+
+
+=item C<used>
+
+
+
+
+The current number of used memory pages.
+
+
+
+=item C<free>
+
+
+
+
+The current number of free memory pages.
+
+
+
+
+=back
+
+
+
+
+
+=item C<slots>
+
+
+
+
+For each memory slot size (8, 16, 32, 64, 128, etc.)
+the following data are provided:
+
+=over
+
+
+
+=item C<used>
+
+
+
+
+The current number of used memory slots.
+
+
+
+=item C<free>
+
+
+
+
+The current number of free memory slots.
+
+
+
+=item C<reqs>
+
+
+
+
+The total number of attempts to allocate memory of specified size.
+
+
+
+=item C<fails>
+
+
+
+
+The number of unsuccessful attempts to allocate memory of specified size.
+
+
+
+
+=back
+
+
+
+
+
+
+=back
+
+
+
+
+
 =item C<upstreams>
 
 
@@ -605,6 +732,28 @@ of the server.
 
 
 
+=item C<name>
+
+
+
+
+The name of the server specified in the
+L<ngx_http_upstream_module>
+directive.
+
+
+
+=item C<service>
+
+
+
+
+The L<ngx_http_upstream_module>
+parameter value of the
+L<ngx_http_upstream_module> directive.
+
+
+
 =item C<backup>
 
 
@@ -636,6 +785,7 @@ Current state, which may be one of
 “C<draining>”,
 “C<down>”,
 “C<unavail>”,
+“C<checking>”,
 or
 “C<unhealthy>”.
 
@@ -770,7 +920,7 @@ threshold.
 
 
 The total number of
-L<health check|ngx_http_upstream_module>
+L<health check|ngx_http_upstream_hc_module>
 requests made.
 
 
@@ -801,7 +951,7 @@ the server became unhealthy (state “C<unhealthy>”).
 
 Boolean indicating
 if the last health check request was successful and passed
-L<tests|ngx_http_upstream_module>.
+L<tests|ngx_http_upstream_hc_module>.
 
 
 
@@ -818,8 +968,8 @@ L<tests|ngx_http_upstream_module>.
 
 
 Total time
-the server was in the “C<unavail>”
-and “C<unhealthy>” states.
+the server was in the “C<unavail>”,
+“C<checking>”, and “C<unhealthy>” states.
 
 
 
@@ -830,8 +980,8 @@ and “C<unhealthy>” states.
 
 The time (in milliseconds since Epoch)
 when the server became
-“C<unavail>”
-or “C<unhealthy>”.
+“C<unavail>”,
+“C<checking>”, or “C<unhealthy>”.
 
 
 
@@ -853,7 +1003,8 @@ when the server was last selected to process a request (1.7.5).
 The average time to get the
 L<response
 header|ngx_http_upstream_module> from the server (1.7.10).
-The field is available when using the
+Prior to version 1.11.6,
+the field was available only when using the
 L<ngx_http_upstream_module>
 load balancing method.
 
@@ -867,7 +1018,8 @@ load balancing method.
 The average time to get the
 L<full
 response|ngx_http_upstream_module> from the server (1.7.10).
-The field is available when using the
+Prior to version 1.11.6,
+the field was available only when using the
 L<ngx_http_upstream_module>
 load balancing method.
 
@@ -887,6 +1039,27 @@ load balancing method.
 
 The current number of
 idle L<ngx_http_upstream_module> connections.
+
+
+
+=item C<zombies>
+
+
+
+
+The current number of servers removed
+from the group but still processing active client requests.
+
+
+
+=item C<zone>
+
+
+
+
+The name of the shared memory
+L<ngx_http_upstream_module>
+that keeps the group’s configuration and run-time state.
 
 
 
@@ -1133,6 +1306,56 @@ connections accepted from clients.
 
 
 
+=item C<sessions>
+
+
+
+
+
+=over
+
+
+
+=item C<total>
+
+
+
+
+The total number of completed client sessions.
+
+
+
+=item 
+C<2xx>,
+C<4xx>,
+C<5xx>
+
+
+
+
+
+The number of sessions completed with
+L<status codes|ngx_stream_core_module>
+2xx, 4xx, or 5xx.
+
+
+
+
+=back
+
+
+
+
+
+=item C<discarded>
+
+
+
+
+The total number of connections completed without creating a session.
+
+
+
 =item C<received>
 
 
@@ -1206,6 +1429,28 @@ of the server.
 
 
 
+
+=item C<name>
+
+
+
+
+The name of the server specified in the
+L<ngx_stream_upstream_module> directive.
+
+
+
+=item C<service>
+
+
+
+
+The L<ngx_stream_upstream_module>
+parameter value of the
+L<ngx_stream_upstream_module> directive.
+
+
+
 =item C<backup>
 
 
@@ -1236,6 +1481,7 @@ Current state, which may be one of
 “C<up>”,
 “C<down>”,
 “C<unavail>”,
+“C<checking>”,
 or
 “C<unhealthy>”.
 
@@ -1266,7 +1512,8 @@ client connections forwarded to this server.
 
 
 The average time to connect to the upstream server.
-The field is available when using the
+Prior to version 1.11.6,
+the field was available only when using the
 L<ngx_stream_upstream_module>
 load balancing method.
 
@@ -1278,7 +1525,8 @@ load balancing method.
 
 
 The average time to receive the first byte of data.
-The field is available when using the
+Prior to version 1.11.6,
+the field was available only when using the
 L<ngx_stream_upstream_module>
 load balancing method.
 
@@ -1290,7 +1538,8 @@ load balancing method.
 
 
 The average time to receive the last byte of data.
-The field is available when using the
+Prior to version 1.11.6,
+the field was available only when using the
 L<ngx_stream_upstream_module>
 load balancing method.
 
@@ -1354,7 +1603,7 @@ threshold.
 
 
 The total number of
-L<health check|ngx_stream_upstream_module>
+L<health check|ngx_stream_upstream_hc_module>
 requests made.
 
 
@@ -1385,7 +1634,7 @@ the server became unhealthy (state “C<unhealthy>”).
 
 Boolean indicating
 if the last health check request was successful and passed
-L<tests|ngx_stream_upstream_module>.
+L<tests|ngx_stream_upstream_hc_module>.
 
 
 
@@ -1402,8 +1651,8 @@ L<tests|ngx_stream_upstream_module>.
 
 
 Total time
-the server was in the “C<unavail>”
-and “C<unhealthy>” states.
+the server was in the “C<unavail>”,
+“C<checking>”, and “C<unhealthy>” states.
 
 
 
@@ -1414,8 +1663,8 @@ and “C<unhealthy>” states.
 
 The time (in milliseconds since Epoch)
 when the server became
-“C<unavail>”
-or “C<unhealthy>”.
+“C<unavail>”,
+“C<checking>”, or “C<unhealthy>”.
 
 
 
@@ -1433,6 +1682,27 @@ when the server was last selected to process a connection.
 =back
 
 
+
+
+
+=item C<zombies>
+
+
+
+
+The current number of servers removed
+from the group but still processing active client connections.
+
+
+
+=item C<zone>
+
+
+
+
+The name of the shared memory
+L<ngx_stream_upstream_module>
+that keeps the group’s configuration and run-time state.
 
 
 
@@ -1465,6 +1735,67 @@ when the server was last selected to process a connection.
 
 =over
 
+
+
+
+=item *
+
+The
+L</zone> field in
+http and stream
+upstreams
+was added in L</version> 8.
+
+
+
+=item *
+
+The L</slabs> status data
+were added in L</version> 8.
+
+
+
+=item *
+
+The
+checking state
+was added in L</version> 8.
+
+
+
+=item *
+
+The
+L</name> and L</service> fields in
+http and stream
+upstreams
+were added in L</version> 8.
+
+
+
+=item *
+
+The
+L</nginx_build> and L</ppid> fields
+were added in L</version> 8.
+
+
+
+=item *
+
+The
+L</sessions> status data
+and the discarded field in
+stream server_zones
+were added in L</version> 7.
+
+
+
+=item *
+
+The L</zombies> field
+was moved from nginx L<debug|debugging_log> version
+in L</version> 6.
 
 
 

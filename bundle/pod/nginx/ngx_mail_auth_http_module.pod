@@ -148,7 +148,7 @@ Request:
     
     GET /auth HTTP/1.0
     Host: localhost
-    Auth-Method: plain # plain/apop/cram-md5
+    Auth-Method: plain # plain/apop/cram-md5/external
     Auth-User: user
     Auth-Pass: password
     Auth-Protocol: imap # imap/pop3/smtp
@@ -289,8 +289,14 @@ the C<Auth-SSL> header is added, and
 C<Auth-SSL-Verify> will contain
 the result of client certificate verification, if
 L<enabled|ngx_mail_ssl_module>:
-“C<SUCCESS>”, “C<FAILED>”, and
-“C<NONE>” if a certificate was not present.
+“C<SUCCESS>”, “C<FAILED:>I<C<reason>>”,
+and “C<NONE>” if a certificate was not present.
+
+B<NOTE>
+
+Prior to version 1.11.7, the “C<FAILED>” result
+did not contain the I<C<reason>> string.
+
 When the client certificate was present,
 its details are passed in the following request headers:
 C<Auth-SSL-Subject>, C<Auth-SSL-Issuer>,

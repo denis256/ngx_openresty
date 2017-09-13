@@ -75,8 +75,8 @@ their processing is delayed such that requests are processed
 at a defined rate.
 Excessive requests are delayed until their number exceeds the
 maximum burst size
-in which case the request is terminated with an error
-C<503> (C<Service Temporarily Unavailable>).
+in which case the request is terminated with an
+error.
 By default, the maximum burst size is equal to zero.
 For example, the directives
 
@@ -271,9 +271,14 @@ The stored state always occupies
 64 bytes on 32-bit platforms and 128 bytes on 64-bit platforms.
 One megabyte zone can keep about 16 thousand 64-byte states
 or about 8 thousand 128-byte states.
-If the zone storage is exhausted, the server will return the
-C<503> (C<Service Temporarily Unavailable>)
-error to all further requests.
+
+
+
+
+
+If the zone storage is exhausted, the least recently used state is removed.
+Even if after that a new state cannot be created, the request is terminated with
+an error.
 
 
 

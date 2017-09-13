@@ -28,7 +28,7 @@ B<context:> I<server>
 
 
 Sets permitted methods of
-L<SASL authentication|http://tools.ietf.org/html/rfc2554>
+L<SASL authentication|https://tools.ietf.org/html/rfc2554>
 for SMTP clients.
 Supported methods are:
 
@@ -41,7 +41,7 @@ Supported methods are:
 
 
 
-L<AUTH LOGIN|http://tools.ietf.org/html/draft-murchison-sasl-login-00>
+L<AUTH LOGIN|https://tools.ietf.org/html/draft-murchison-sasl-login-00>
 
 
 
@@ -50,7 +50,7 @@ L<AUTH LOGIN|http://tools.ietf.org/html/draft-murchison-sasl-login-00>
 
 
 
-L<AUTH PLAIN|http://tools.ietf.org/html/rfc4616>
+L<AUTH PLAIN|https://tools.ietf.org/html/rfc4616>
 
 
 
@@ -59,8 +59,17 @@ L<AUTH PLAIN|http://tools.ietf.org/html/rfc4616>
 
 
 
-L<AUTH CRAM-MD5|http://tools.ietf.org/html/rfc2195>.
+L<AUTH CRAM-MD5|https://tools.ietf.org/html/rfc2195>.
 In order for this method to work, the password must be stored unencrypted.
+
+
+
+=item C<external>
+
+
+
+
+L<AUTH EXTERNAL|https://tools.ietf.org/html/rfc4422> (1.11.6).
 
 
 
@@ -103,8 +112,10 @@ B<context:> I<server>
 Sets the SMTP protocol extensions list
 that is passed to the client in response to the
 C<EHLO> command.
-Authentication methods specified in the L</smtp_auth> directive
-are automatically added to this list.
+The authentication methods specified in the L</smtp_auth> directive and
+L<STARTTLS|https://tools.ietf.org/html/rfc3207>
+are automatically added to this list depending on the
+L<ngx_mail_ssl_module> directive value.
 
 
 

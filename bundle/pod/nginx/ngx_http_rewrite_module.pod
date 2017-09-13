@@ -12,7 +12,7 @@ ngx_http_rewrite_module - Module ngx_http_rewrite_module
 
 
 The C<ngx_http_rewrite_module> module is used to
-change request URI using regular expressions, return redirects, and
+change request URI using PCRE regular expressions, return redirects, and
 conditionally select configurations.
 
 
@@ -306,7 +306,7 @@ a response header.
 
 
 Starting from version 0.8.42, it is possible to specify
-either a redirect URL (for codes 301, 302, 303, and 307),
+either a redirect URL (for codes 301, 302, 303, 307, and 308)
 or the response body I<C<text>> (for other codes).
 A response body text and redirect URL can contain variables.
 As a special case, a redirect URL can be specified as a URI
@@ -340,6 +340,12 @@ Only the following codes could be returned before version 0.7.51:
 B<NOTE>
 
 The code 307 was not treated as a redirect until versions 1.1.16 and 1.0.13.
+
+
+
+B<NOTE>
+
+The code 308 was not treated as a redirect until version 1.13.0.
 
 
 
@@ -381,9 +387,9 @@ as specified in the I<C<replacement>> string.
 The C<rewrite> directives are executed sequentially
 in order of their appearance in the configuration file.
 It is possible to terminate further processing of the directives using flags.
-If a replacement string starts with “C<http:E<sol>E<sol>>”
-or “C<https:E<sol>E<sol>>”, the processing stops and the
-redirect is returned to a client.
+If a replacement string starts with “C<http:E<sol>E<sol>>”,
+“C<https:E<sol>E<sol>>”, or “C<$scheme>”,
+the processing stops and the redirect is returned to a client.
 
 
 
@@ -424,7 +430,8 @@ as with the L</break> directive;
 
 returns a temporary redirect with the 302 code;
 used if a replacement string does not start with
-“C<http:E<sol>E<sol>>” or “C<https:E<sol>E<sol>>”;
+“C<http:E<sol>E<sol>>”, “C<https:E<sol>E<sol>>”,
+or “C<$scheme>”;
 
 
 

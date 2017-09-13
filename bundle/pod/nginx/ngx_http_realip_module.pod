@@ -13,7 +13,7 @@ ngx_http_realip_module - Module ngx_http_realip_module
 
 The C<ngx_http_realip_module> module is used
 to change the client address and optional port
-to the one sent in the specified header fields.
+to those sent in the specified header field.
 
 
 
@@ -71,6 +71,7 @@ Defines trusted addresses that are known to send correct
 replacement addresses.
 If the special value C<unix:> is specified,
 all UNIX-domain sockets will be trusted.
+Trusted addresses may also be specified using a hostname (1.13.1).
 
 B<NOTE>
 
@@ -115,10 +116,10 @@ whose value will be used to replace the client address.
 
 
 
-The C<X-Real-IP> and C<X-Forwarded-For>
-parameters may contain an optional port (1.11.0).
+The request header field value that contains an optional port
+is also used to replace the client port (1.11.0).
 The address and port should be specified according to
-L<RFC 3986|http://tools.ietf.org/html/3986>.
+L<RFC 3986|https://tools.ietf.org/html/rfc3986>.
 
 
 

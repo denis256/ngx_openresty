@@ -19,8 +19,9 @@ limiting access to certain client addresses.
 
 
 Access can also be limited by
-L<password|ngx_http_auth_basic_module> or by the
-L<result of subrequest|ngx_http_auth_request_module>.
+L<password|ngx_http_auth_basic_module>, by the
+L<result of subrequest|ngx_http_auth_request_module>,
+or by L<JWT|ngx_http_auth_jwt_module>.
 Simultaneous limitation of access by address and by password is controlled
 by the L<ngx_http_core_module> directive.
 

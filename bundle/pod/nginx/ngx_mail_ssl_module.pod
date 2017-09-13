@@ -151,6 +151,36 @@ A secret key in the PEM format may be placed in the same file.
 
 
 
+Since version 1.11.0,
+this directive can be specified multiple times
+to load certificates of different types, for example, RSA and ECDSA:
+
+    
+    server {
+        listen              993 ssl;
+    
+        ssl_certificate     example.com.rsa.crt;
+        ssl_certificate_key example.com.rsa.key;
+    
+        ssl_certificate     example.com.ecdsa.crt;
+        ssl_certificate_key example.com.ecdsa.key;
+    
+        ...
+    }
+
+
+
+B<NOTE>
+
+Only OpenSSL 1.0.2 or higher supports separate certificate chains
+for different certificates.
+With older versions, only one certificate chain can be used.
+
+
+
+
+
+
 
 
 =head2 ssl_certificate_key
@@ -493,7 +523,8 @@ B<syntax:> ssl_protocols I<
     [C<SSLv3>]
     [C<TLSv1>]
     [C<TLSv1.1>]
-    [C<TLSv1.2>]>
+    [C<TLSv1.2>]
+    [C<TLSv1.3>]>
 
 
 B<default:> I<TLSv1 TLSv1.1 TLSv1.2>
@@ -509,16 +540,17 @@ B<context:> I<server>
 
 
 Enables the specified protocols.
-The C<TLSv1.1> and C<TLSv1.2> parameters work
-only when the OpenSSL library of version 1.0.1 or higher is used.
 
 B<NOTE>
 
-The C<TLSv1.1> and C<TLSv1.2> parameters are
-supported starting from versions 1.1.13 and 1.0.12
-so when the OpenSSL version 1.0.1 or higher
-is used on older nginx versions, these protocols work, but cannot
-be disabled.
+The C<TLSv1.1> and C<TLSv1.2> parameters
+(1.1.13, 1.0.12) work only when OpenSSL 1.0.1 or higher is used.
+
+
+B<NOTE>
+
+The C<TLSv1.3> parameter (1.13.0) works only when
+OpenSSL 1.1.1 built with TLSv1.3 support is used.
 
 
 
@@ -671,13 +703,15 @@ This allows configuring key rotation, for example:
 
 
 
-The I<C<file>> must contain 48 bytes of random data and can
-be created using the following command:
+The I<C<file>> must contain 80 or 48 bytes
+of random data and can be created using the following command:
 
     
-    openssl rand 48 > ticket.key
+    openssl rand 80 > ticket.key
 
 
+Depending on the file size either AES256 (for 80-byte keys, 1.11.8)
+or AES128 (for 48-byte keys) is used for encryption.
 
 
 
@@ -708,7 +742,7 @@ This directive appeared in version 1.5.9.
 
 
 Enables or disables session resumption through
-L<TLS session tickets|http://tools.ietf.org/html/rfc5077>.
+L<TLS session tickets|https://tools.ietf.org/html/rfc5077>.
 
 
 
@@ -735,7 +769,7 @@ B<context:> I<server>
 
 
 Specifies a time during which a client may reuse the
-session parameters stored in a cache.
+session parameters.
 
 
 
@@ -897,7 +931,7 @@ B<context:> I<server>
 
 
 allow usage of the C<STLS> command for the POP3
-and the C<STARTTLS> command for the IMAP;
+and the C<STARTTLS> command for the IMAP and SMTP;
 
 
 

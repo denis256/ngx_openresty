@@ -386,7 +386,7 @@ By default, C<entity> is used.
 
 a non-standard parameter that sets a string to be output
 if a variable is undefined.
-By default, “C<none>” is output.
+By default, “C<(none)>” is output.
 The command
 
     

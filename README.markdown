@@ -5,8 +5,8 @@ This repository is basically a place for me to store the latest OpenResty + Ngin
 
 Contains:
 ---------
-* OpenResty 1.9.15.1
-* Nginx 1.9.15
+* OpenResty 1.11.2.5
+* Nginx 1.11.2
 * LuaJit
 
 Built-in modules:
@@ -76,13 +76,14 @@ that all these modules are played well together.
 
 The bundled software components are copyrighted by the respective copyright holders.
 
-The homepage for this project is http://openresty.org.
+The homepage for this project is on [openresty.org](https://openresty.org/).
 
 For Users
 ---------
 
-Visit http://openresty.org/#Download to download the latest bundle tarball, and
-follow the installation instructions in the page http://openresty.org/#Installation.
+Visit the [download page](https://openresty.org/en/download.html) on the `openresty.org` web site
+to download the latest bundle tarball, and
+follow the installation instructions in the [installation page](https://openresty.org/en/installation.html).
 
 For Bundle Maintainers
 ----------------------
@@ -99,12 +100,12 @@ make
 
 at the top of the bundle source tree.
 
-Please note that you may need to install some extra dependencies, like `perl` and `dos2unix`.
+Please note that you may need to install some extra dependencies, like `perl`, `dos2unix`, and `mercurial`.
 On Fedora 22, for example, installing the dependencies
 is as simple as running the following commands:
 
 ```bash
-sudo dnf install perl dos2unix
+sudo dnf install perl dos2unix mercurial
 ```
 
 [Back to TOC](#table-of-contents)
@@ -136,7 +137,7 @@ Copyright & License
 
 The bundle itself is licensed under the 2-clause BSD license.
 
-Copyright (c) 2011-2016, Yichun "agentzh" Zhang (章亦春) <agentzh@gmail.com>, CloudFlare Inc.
+Copyright (c) 2011-2017, Yichun "agentzh" Zhang (章亦春) <agentzh@gmail.com>, OpenResty Inc.
 
 This module is licensed under the terms of the BSD license.
 

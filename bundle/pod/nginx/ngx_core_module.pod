@@ -38,7 +38,7 @@ ngx_core_module - Core functionality
 B<syntax:> accept_mutex I<C<on> E<verbar> C<off>>
 
 
-B<default:> I<on>
+B<default:> I<off>
 
 
 B<context:> I<events>
@@ -52,6 +52,19 @@ worker processes will accept new connections by turn.
 Otherwise, all worker processes will be notified about new connections,
 and if volume of new connections is low, some of the worker processes
 may just waste system resources.
+
+B<NOTE>
+
+There is no need to enable C<accept_mutex>
+on systems that support the
+L<EPOLLEXCLUSIVE|events> flag (1.11.3) or
+when using L<ngx_http_core_module>.
+
+
+B<NOTE>
+
+Prior to version 1.11.3, the default value was C<on>.
+
 
 
 
@@ -223,6 +236,8 @@ B<context:> I<location>
 
 Configures logging.
 Several logs can be specified on the same level (1.5.2).
+If on the C<main> configuration level writing a log to a file
+is not explicitly defined, the default file will be used.
 
 
 
@@ -267,14 +282,8 @@ B<NOTE>
 
 The directive can be specified on the
 C<stream> level
-starting from version 1.7.11.
-
-
-
-B<NOTE>
-
-The directive can be specified on the
-C<mail> level
+starting from version 1.7.11,
+and on the C<mail> level
 starting from version 1.9.0.
 
 
@@ -1081,6 +1090,34 @@ B<context:> I<main>
 Changes the limit on the maximum number of open files
 (C<RLIMIT_NOFILE>) for worker processes.
 Used to increase the limit without restarting the main process.
+
+
+
+
+
+
+
+=head2 worker_shutdown_timeout
+
+
+B<syntax:> worker_shutdown_timeout I<I<C<time>>>
+
+
+
+B<context:> I<main>
+
+
+
+This directive appeared in version 1.11.11.
+
+
+
+
+
+Configures a timeout for a graceful shutdown of worker processes.
+When the I<C<time>> expires,
+nginx will try to close all the connections currently open
+to facilitate shutdown.
 
 
 
